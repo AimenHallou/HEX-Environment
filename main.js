@@ -64,6 +64,9 @@ async function login() {
     if (!currentUser) {
       currentUser = await Moralis.authenticate();
     }
+    let address = Moralis.User.current().get("ethAddress");
+    document.getElementById("login_button").style.visibility = "hidden";
+    document.getElementById("account-number").innerHTML = address;
     document.getElementById("swap_button").disabled = false;
   } catch (error) {
     console.log(error);
