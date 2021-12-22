@@ -27,11 +27,13 @@ async function listAvailableTokens() {
   let searchBox = searchDiv.querySelector("input");
   let TokenArray = [];
   console.log(tokens);
-  autocomplete(searchBox, tokens)
+  console.log(TokenArray);
   for (const address in tokens) {
     let token = tokens[address];
     TokenArray.push(token.symbol);
   }
+  autocomplete(searchBox, TokenArray, tokens)
+
 
   // searchBox.onkeyup = (e) => {
   //   let userData = e.target.value;
@@ -186,11 +188,12 @@ function doSwap(userAddress, amount) {
   });
 }
 //Test
-function autocomplete(inp, arr) {
+function autocomplete(inp, arr, list) {
   /*the autocomplete function takes two arguments,
   the text field element and an array of possible autocompleted values:*/
   var currentFocus;
   /*execute a function when someone writes in the text field:*/
+  
   inp.addEventListener("input", function(e) {
       var a, b, i, val = this.value;
       /*close any already open lists of autocompleted values*/
@@ -210,7 +213,7 @@ function autocomplete(inp, arr) {
           /*create a DIV element for each matching element:*/
           b = document.createElement("DIV");
           /*make the matching letters bold:*/
-          b.innerHTML = "<strong>" + arr[i].symbol.substr(0, val.length) + "</strong>";
+          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
           b.innerHTML += arr[i].substr(val.length);
           /*insert a input field that will hold the current array item's value:*/
           b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
@@ -227,7 +230,10 @@ function autocomplete(inp, arr) {
       }
   });
   /*execute a function presses a key on the keyboard:*/
-  inp.addEventListener("keydown", function(e) {
+  let input = inp.value;
+  console.log("input"+input.length);
+  if(input.length>0){
+    inp.addEventListener("keydown", function(e) {
       var x = document.getElementById(this.id + "autocomplete-list");
       if (x) x = x.getElementsByTagName("div");
       if (e.keyCode == 40) {
@@ -251,6 +257,10 @@ function autocomplete(inp, arr) {
         }
       }
   });
+  } else {
+    
+  }
+
   function addActive(x) {
     /*a function to classify an item as "active":*/
     if (!x) return false;
