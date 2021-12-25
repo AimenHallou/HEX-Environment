@@ -6,7 +6,6 @@ let currentSelectSide;
 let tokens;
 
 
-
 async function init() {
   await Moralis.start({ serverUrl, appId });
   await Moralis.enableWeb3();
@@ -26,13 +25,13 @@ async function listAvailableTokens() {
   let searchDiv = document.querySelector(".search_input");
   let searchBox = searchDiv.querySelector("input");
   let TokenArray = [];
-  console.log(tokens);
+  console.log("tokens");
   console.log(TokenArray);
   for (const address in tokens) {
     let token = tokens[address];
     TokenArray.push(token.symbol);
   }
-  autocomplete(searchBox, TokenArray, tokens)
+  autocomplete(searchBox, tokens)
 
 
   // searchBox.onkeyup = (e) => {
@@ -188,7 +187,7 @@ function doSwap(userAddress, amount) {
   });
 }
 //Test
-function autocomplete(inp, arr, list) {
+function autocomplete(inp, arr) {
   /*the autocomplete function takes two arguments,
   the text field element and an array of possible autocompleted values:*/
   var currentFocus;
