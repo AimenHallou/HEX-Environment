@@ -17,6 +17,10 @@ async function init() {
   }
 }
 
+
+
+
+
 async function listAvailableTokens() {
   const result = await Moralis.Plugins.oneInch.getSupportedTokens({
     chain: "eth", // The blockchain you want to use (eth/bsc/polygon)
@@ -24,14 +28,18 @@ async function listAvailableTokens() {
   tokens = result.tokens;
   let searchDiv = document.querySelector(".search_input");
   let searchBox = searchDiv.querySelector("input");
-  let TokenArray = [];
-  console.log("tokens");
-  console.log(TokenArray);
+  let TokenArraySub = [];
+  let TokenArrayTotal = [];
+  console.log(tokens);
   for (const address in tokens) {
     let token = tokens[address];
-    TokenArray.push(token.symbol);
+    TokenArraySub.push(token.symbol);
   }
-  autocomplete(searchBox, tokens)
+  for (const address in tokens) {
+    let token = tokens[address];
+    TokenArrayTotal.push(token.symbol);
+  }
+  autocomplete(searchBox, TokenArraySub,TokenArrayTotal);
 
 
   // searchBox.onkeyup = (e) => {
@@ -44,49 +52,47 @@ async function listAvailableTokens() {
   //     console.log(emptyArray);
   //   }
 
-  searchBox.addEventListener('keyup', (e) => {
-    let result = [];
-    let input = searchBox.value;
-      result = TokenArray.filter((item) => {
-        return item.toLowerCase().includes(input.toLowerCase());
-      })
+  // searchBox.addEventListener('keyup', (e) => {
+  //   let result = [];
+  //   let input = searchBox.value;
+  //     result = TokenArray.filter((item) => {
+  //       return item.toLowerCase().includes(input.toLowerCase());
+  //     })
 
-      let parent = document.getElementById("token_list");
-      let div = document.createElement("div");
-      let sent = [];
+  //     let parent = document.getElementById("token_list");
+  //     let div = document.createElement("div");
+  //     let sent = [];
 
-    //   for (const address in tokens) {
-    //     let token = tokens[address];
-    //       if (input.length){
-    //         if (result.includes(token.symbol)){
+  //   //   for (const address in tokens) {
+  //   //     let token = tokens[address];
+  //   //       if (input.length){
+  //   //         if (result.includes(token.symbol)){
 
               
-    //         }
-    //       } else {
-    //         let div = document.createElement("div");
-    //         div.setAttribute("data-address", address);
-    //         div.className = "token_row";
-    //         let html = `
-    //             <img class="token_list_img" src="${token.logoURI}">
-    //             <span class="token_list_text">${token.symbol}</span>
-    //             `;
-    //         div.innerHTML = html;
-    //         div.onclick = () => {
-    //           selectToken(address);
-    //         };
-    //         parent.appendChild(div);
-    //       }
-    // }
-    console.log(result);
+  //   //         }
+  //   //       } else {
+  //   //         let div = document.createElement("div");
+  //   //         div.setAttribute("data-address", address);
+  //   //         div.className = "token_row";
+  //   //         let html = `
+  //   //             <img class="token_list_img" src="${token.logoURI}">
+  //   //             <span class="token_list_text">${token.symbol}</span>
+  //   //             `;
+  //   //         div.innerHTML = html;
+  //   //         div.onclick = () => {
+  //   //           selectToken(address);
+  //   //         };
+  //   //         parent.appendChild(div);
+  //   //       }
+  //   // }
+  //   console.log(result);
 
 
-    console.log(e.target.value);
-  });
+  //   console.log(e.target.value);
+  // });
 
 
 }
-
-
 
 
 
@@ -187,12 +193,13 @@ function doSwap(userAddress, amount) {
   });
 }
 //Test
-function autocomplete(inp, arr) {
+function autocomplete(inp, sub) {
   /*the autocomplete function takes two arguments,
   the text field element and an array of possible autocompleted values:*/
   var currentFocus;
   /*execute a function when someone writes in the text field:*/
-  
+  let input = inp.value;
+  console.log("input"+input.length);
   inp.addEventListener("input", function(e) {
       var a, b, i, val = this.value;
       /*close any already open lists of autocompleted values*/
@@ -206,32 +213,33 @@ function autocomplete(inp, arr) {
       /*append the DIV element as a child of the autocomplete container:*/
       this.parentNode.appendChild(a);
       /*for each item in the array...*/
-      for (i = 0; i < arr.length; i++) {
-        /*check if the item starts with the same letters as the text field value:*/
-        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-          /*create a DIV element for each matching element:*/
-          b = document.createElement("DIV");
-          /*make the matching letters bold:*/
-          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-          b.innerHTML += arr[i].substr(val.length);
-          /*insert a input field that will hold the current array item's value:*/
-          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-          /*execute a function when someone clicks on the item value (DIV element):*/
-              b.addEventListener("click", function(e) {
-              /*insert the value for the autocomplete text field:*/
-              inp.value = this.getElementsByTagName("input")[0].value;
-              /*close the list of autocompleted values,
-              (or any other open lists of autocompleted values:*/
-              closeAllLists();
-          });
-          a.appendChild(b);
+        for (i = 0; i < sub.length; i++) {
+          /*check if the item starts with the same letters as the text field value:*/
+          if (sub[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+            /*create a DIV element for each matching element:*/
+            b = document.createElement("DIV");
+            /*make the matching letters bold:*/
+            b.innerHTML = "<strong>" + sub[i].substr(0, val.length) + "</strong>";
+            b.innerHTML += sub[i].substr(val.length);
+            /*insert a input field that will hold the current array item's value:*/
+            b.innerHTML += "<input type='hidden' value='" + sub[i] + "'>";
+            /*execute a function when someone clicks on the item value (DIV element):*/
+                b.addEventListener("click", function(e) {
+                /*insert the value for the autocomplete text field:*/
+                inp.value = this.getElementsByTagName("input")[0].value;
+                /*close the list of autocompleted values,
+                (or any other open lists of autocompleted values:*/
+                closeAllLists();
+            });
+            a.appendChild(b);
+          }
         }
-      }
+      
   });
   /*execute a function presses a key on the keyboard:*/
-  let input = inp.value;
-  console.log("input"+input.length);
-  if(input.length>0){
+
+  
+    console.log("working")
     inp.addEventListener("keydown", function(e) {
       var x = document.getElementById(this.id + "autocomplete-list");
       if (x) x = x.getElementsByTagName("div");
@@ -256,9 +264,6 @@ function autocomplete(inp, arr) {
         }
       }
   });
-  } else {
-    
-  }
 
   function addActive(x) {
     /*a function to classify an item as "active":*/
