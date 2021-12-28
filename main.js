@@ -5,6 +5,8 @@ let currentTrade = {};
 let currentSelectSide;
 let tokens;
 
+const ethAddress = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+
 const tokenInput = document.getElementById('token_input');
 const tokenList = document.getElementById('token_list');
 
@@ -12,11 +14,12 @@ async function init() {
     await Moralis.start({ serverUrl, appId });
     await Moralis.enableWeb3();
     await listAvailableTokens();
-
     currentUser = Moralis.User.current();
     if (currentUser) {
         document.getElementById('swap_button').disabled = false;
     }
+    openModal('from');
+    selectToken(ethAddress)
 }
 
 async function listAvailableTokens() {
@@ -141,7 +144,6 @@ function initTokenInput() {
     });
 }
 
-//Test
 function autocomplete(val = '') {
     tokenList.innerHTML = '';
 
