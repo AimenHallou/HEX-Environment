@@ -91,7 +91,7 @@ async function login() {
         }
         let address = Moralis.User.current().get('ethAddress');
         document.getElementById('login_button').style.visibility = 'hidden';
-        document.getElementById('account-number').innerHTML = address;
+        document.getElementById('account-number').innerHTML = address.substring(0,6)+"..."+address.substring(address.length-4,address.length);
         document.getElementById('swap_button').disabled = false;
     } catch (error) {
         console.log(error);
