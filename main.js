@@ -19,6 +19,7 @@ async function init() {
     currentUser = Moralis.User.current();
     if (currentUser) {
         document.getElementById('swap_button').disabled = false;
+        login();
     }
     openModal('from');
     selectToken(ethAddress)
@@ -90,9 +91,10 @@ async function login() {
             currentUser = await Moralis.authenticate();
         }
         let address = Moralis.User.current().get('ethAddress');
-        document.getElementById('login_button').style.visibility = 'hidden';
         document.getElementById('account-number').innerHTML = address.substring(0,6)+"..."+address.substring(address.length-4,address.length);
         document.getElementById('swap_button').disabled = false;
+        var elem = document.getElementById("login_button");
+        return elem.parentNode.removeChild(elem);
     } catch (error) {
         console.log(error);
     }
