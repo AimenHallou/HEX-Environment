@@ -4,6 +4,7 @@ const appId = 'yjkLOuAuQBemzhPOfQOQkm1dmmAH3bWxj7jRoDKw'; // Application id from
 let currentTrade = {};
 let currentSelectSide;
 let tokens;
+let userBalance = {};
 
 const ethAddress = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
 
@@ -13,6 +14,7 @@ const tokenList = document.getElementById('token_list');
 async function init() {
     await Moralis.start({ serverUrl, appId });
     await Moralis.enableWeb3();
+    getBalance();
     await listAvailableTokens();
     currentUser = Moralis.User.current();
     if (currentUser) {
@@ -20,6 +22,7 @@ async function init() {
     }
     openModal('from');
     selectToken(ethAddress)
+
 }
 
 async function listAvailableTokens() {
@@ -31,6 +34,11 @@ async function listAvailableTokens() {
     initTokenInput();
 }
 
+async function getBalance() {
+  userBalance = await Moralis.Web3.getAllERC20();
+  console.log(userBalance);
+}
+
 function selectToken(address) {
     console.log(address, ' quick test');
     closeModal();
@@ -39,6 +47,7 @@ function selectToken(address) {
     console.log(currentTrade);
     renderInterface();
     getQuote();
+    checkBalance(address);
 }
 
 function renderInterface() {
@@ -50,6 +59,28 @@ function renderInterface() {
         document.getElementById('to_token_img').src = currentTrade.to.logoURI;
         document.getElementById('to_token_text').innerHTML = currentTrade.to.symbol;
     }
+}
+
+function checkBalance (address){
+  console.log("From ",tokens[address].symbol);
+  console.log("User ",userBalance);
+  userBalance.forEach(function (arrayItem) {
+    console.log(arrayItem.balance);
+    if (arrayItem.symbol === tokens[address].symbol){
+      console.log(currentSelectSide)
+      if (currentSelectSide=="from"){
+        document.getElementById("from_balance").innerHTML = "Balance: "+ Math.round(Web3.utils.fromWei(arrayItem.balance)*1000000)/1000000;
+        document.getElementById("from_balance").style.visibility = "visible";
+
+      } else {
+        document.getElementById("to_balance").innerHTML = "Balance: "+ Math.round(Web3.utils.fromWei(arrayItem.balance)*1000000)/1000000;;
+        document.getElementById("to_balance").style.visibility = "visible";
+
+      }
+
+    }
+  });
+
 }
 
 async function login() {
