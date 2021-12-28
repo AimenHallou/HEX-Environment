@@ -65,19 +65,19 @@ function checkBalance (address){
   console.log("From ",tokens[address].symbol);
   console.log("User ",userBalance);
   userBalance.forEach(function (arrayItem) {
-    console.log(arrayItem.balance);
+    if (arrayItem.symbol=== "ETH"){
+      document.getElementById("eth_balance").innerHTML =Math.round(Web3.utils.fromWei(arrayItem.balance)*1000000)/1000000+" ETH &nbsp;";
+      console.log(arrayItem.symbol)
+    }
     if (arrayItem.symbol === tokens[address].symbol){
       console.log(currentSelectSide)
       if (currentSelectSide=="from"){
         document.getElementById("from_balance").innerHTML = "Balance: "+ Math.round(Web3.utils.fromWei(arrayItem.balance)*1000000)/1000000;
         document.getElementById("from_balance").style.visibility = "visible";
-
       } else {
         document.getElementById("to_balance").innerHTML = "Balance: "+ Math.round(Web3.utils.fromWei(arrayItem.balance)*1000000)/1000000;;
         document.getElementById("to_balance").style.visibility = "visible";
-
       }
-
     }
   });
 
