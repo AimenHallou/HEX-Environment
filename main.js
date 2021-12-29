@@ -116,6 +116,7 @@ function openModal(side) {
     tokenInput.value = '';
     currentSelectSide = side;
     document.getElementById('token_modal').style.display = 'block';
+    tokenInput.focus();
 }
 function closeModal() {
     tokenInput.value = '';
