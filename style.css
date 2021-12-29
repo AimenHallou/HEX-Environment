@@ -18,6 +18,19 @@ body {
     width: 50%;
     float: left;
 }
+.flip_switch{
+    margin:auto;
+    display:block;
+    border: none;
+    width:30px;
+    height: 10;
+    padding:0px;
+    outline: none;
+}
+.flip_switch_image{
+    width:100%;
+    object-fit: cover;
+}
 
 .search_bars{
     background-color: transparent;
@@ -42,7 +55,7 @@ body {
 
 .swapbox {
     overflow: auto;
-    margin: 20px 0;
+    margin: 10px 0;
     padding: 20px;
     background-color: #2f2f2f;
     border-radius: 20px;

@@ -135,6 +135,17 @@ async function getQuote() {
     document.getElementById('to_amount').value = quote.toTokenAmount / 10 ** quote.toToken.decimals;
 }
 
+function swapPositions(){
+    if (currentTrade.from && currentTrade.to){
+        temp = currentTrade.to.address;
+        currentSelectSide = "to";
+        selectToken(currentTrade.from.address);
+        currentSelectSide = "from";
+        selectToken(temp);
+        console.log("working")
+    }
+}
+
 async function trySwap() {
     let address = Moralis.User.current().get('ethAddress');
     let amount = Number(document.getElementById('from_amount').value * 10 ** currentTrade.from.decimals);
@@ -225,7 +236,6 @@ function autocomplete(val = '') {
             tokenList.appendChild(tokenElement);
         });
 }
-//Test
 
 init();
 
@@ -238,4 +248,5 @@ document.getElementById('to_token_select').onclick = () => {
 };
 document.getElementById('login_button').onclick = login;
 document.getElementById('from_amount').onblur = getQuote;
+document.getElementById('flip_switch').onclick = swapPositions;
 document.getElementById('swap_button').onclick = trySwap;
