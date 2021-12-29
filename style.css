@@ -19,6 +19,21 @@ body {
     float: left;
 }
 
+.search_bars{
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 34px;
+    outline: none;
+    width: 100%;
+}
+
+.balance{
+    color: rgb(165, 165, 165);
+    font-size: 12px;
+    margin-bottom: 0px;
+}
+
 .search_input {
     text-align: center;
     padding: 16px;

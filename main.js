@@ -65,13 +65,14 @@ function renderInterface() {
 function checkBalance (address){
   console.log("From ",tokens[address].symbol);
   console.log("User ",userBalance);
+  var count = 0;
   userBalance.forEach(function (arrayItem) {
     if (arrayItem.symbol=== "ETH"){
       document.getElementById("eth_balance").innerHTML =Math.round(Web3.utils.fromWei(arrayItem.balance)*1000000)/1000000+" ETH &nbsp;";
       console.log(arrayItem.symbol)
     }
     if (arrayItem.symbol === tokens[address].symbol){
-      console.log(currentSelectSide)
+      count = 1;
       if (currentSelectSide=="from"){
         document.getElementById("from_balance").innerHTML = "Balance: "+ Math.round(Web3.utils.fromWei(arrayItem.balance)*1000000)/1000000;
         document.getElementById("from_balance").style.visibility = "visible";
@@ -81,6 +82,13 @@ function checkBalance (address){
       }
     }
   });
+  if (count==0){
+    if (currentSelectSide=="from"){
+      document.getElementById("from_balance").style.visibility = "hidden";
+    } else {
+      document.getElementById("to_balance").style.visibility = "hidden";
+    }
+  }
 
 }
 
