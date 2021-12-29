@@ -52,7 +52,12 @@ function selectToken(address) {
     renderInterface();
     getQuote();
     checkBalance(address);
-
+    if (currentSelectSide=="from"){
+      getToPrice();
+    }
+    if (currentSelectSide=="to"){
+      getFromPrice()
+    }
 }
 
 function renderInterface() {
@@ -125,20 +130,23 @@ function closeModal() {
 }
 
 async function getQuote() {
-    if (!currentTrade.from || !currentTrade.to || !document.getElementById('from_amount').value) return;
+    if (!currentTrade.from || !currentTrade.to )
+     return;
+    if (document.getElementById('from_amount').value==0){
+      document.getElementById('to_amount').value="";
+    } else {
+      let amount = Number(document.getElementById('from_amount').value * 10 ** currentTrade.from.decimals);
 
-    let amount = Number(document.getElementById('from_amount').value * 10 ** currentTrade.from.decimals);
-
-    const quote = await Moralis.Plugins.oneInch.quote({
-        chain: 'eth', // The blockchain you want to use (eth/bsc/polygon)
-        fromTokenAddress: currentTrade.from.address, // The token you want to swap
-        toTokenAddress: currentTrade.to.address, // The token you want to receive
-        amount: amount,
-    });
-    console.log(quote);
-    document.getElementById('gas_estimate').innerHTML = quote.estimatedGas;
-    document.getElementById('to_amount').value = quote.toTokenAmount / 10 ** quote.toToken.decimals;
-
+      const quote = await Moralis.Plugins.oneInch.quote({
+          chain: 'eth', // The blockchain you want to use (eth/bsc/polygon)
+          fromTokenAddress: currentTrade.from.address, // The token you want to swap
+          toTokenAddress: currentTrade.to.address, // The token you want to receive
+          amount: amount,
+      });
+      console.log(quote);
+      document.getElementById('gas_estimate').innerHTML = quote.estimatedGas;
+      document.getElementById('to_amount').value = quote.toTokenAmount / 10 ** quote.toToken.decimals;
+    }
 }
 
 function swapPositions(){

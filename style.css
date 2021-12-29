@@ -39,11 +39,18 @@ body {
     font-size: 34px;
     outline: none;
     width: 100%;
+    text-align: right;
+    padding: 0px;
+}
+.price{
+    text-align: right;
 }
 
 .balance{
     color: rgb(165, 165, 165);
     font-size: 12px;
+    padding: 10px;
+    padding-left: 0px;
     margin-bottom: 0px;
 }
 
@@ -70,7 +77,10 @@ body {
 }
 .token_list_img,
 .token_image {
-    width: 40px;
+    width: 45px;
+}
+.eth_image {
+    width: 30px;
 }
 .modal-body {
     height: 600px;
