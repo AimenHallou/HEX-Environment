@@ -6,7 +6,8 @@ let currentSelectSide;
 let tokens;
 let userBalance = {};
 
-const ethAddress = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+const ethAddress = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
+const wEthAddress = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
 
 const tokenInput = document.getElementById('token_input');
 const tokenList = document.getElementById('token_list');
@@ -23,6 +24,8 @@ async function init() {
     }
     openModal('from');
     selectToken(ethAddress)
+    await getPrice();
+
 
 }
 
@@ -49,6 +52,7 @@ function selectToken(address) {
     renderInterface();
     getQuote();
     checkBalance(address);
+
 }
 
 function renderInterface() {
@@ -133,6 +137,7 @@ async function getQuote() {
     console.log(quote);
     document.getElementById('gas_estimate').innerHTML = quote.estimatedGas;
     document.getElementById('to_amount').value = quote.toTokenAmount / 10 ** quote.toToken.decimals;
+
 }
 
 function swapPositions(){
@@ -143,9 +148,120 @@ function swapPositions(){
         currentSelectSide = "from";
         selectToken(temp);
         console.log("working")
+          getPrice()
     }
 }
+async function getPrice(){
+    if (currentTrade.from){
+      var val = document.getElementById('from_amount').value;
+      if (val == 0){
+        document.getElementById('from_price').style.visibility = "hidden";
+      } else {
+        if (currentTrade.from.address === ethAddress){
+          let settings = {address: wEthAddress}
+          let price = await Moralis.Web3API.token.getTokenPrice(settings);
+          let string = "$"+(Math.round(price.usdPrice*100)/100)*val;
+          console.log("this is the price"+string)
+          document.getElementById('from_price').style.visibility = "visible";
+          document.getElementById('from_price').innerHTML = string;
+        } else {
+          let settings = {address: currentTrade.from.address}
+          let price = await Moralis.Web3API.token.getTokenPrice(settings);
+          document.getElementById('from_price').style.visibility = "visible";
+          document.getElementById('from_price').innerHTML = "$"+Math.round(price.usdPrice*100)/100;
+        }
+      }
+    }
+  }
+async function getFromPrice(){
+      var val = document.getElementById('from_amount').value;
+      if (val == 0){
+        document.getElementById('from_price').style.visibility = "hidden";
+      } else {
+        if (currentTrade.from.address === ethAddress){
+        let settings = {address: wEthAddress}
+        let price = await Moralis.Web3API.token.getTokenPrice(settings);
+        let addedConst = price.usdPrice*val;
+        let string = "$"+(Math.round(addedConst*100)/100);
+        console.log("this is the price "+string)
+        document.getElementById('from_price').style.visibility = "visible";
+        document.getElementById('from_price').innerHTML = string;
+      } else {
+        let settings = {address: currentTrade.from.address}
+        let price = await Moralis.Web3API.token.getTokenPrice(settings);
+        let addedConst = price.usdPrice*val;
+        let string = "$"+(Math.round(addedConst*100)/100);
+        document.getElementById('from_price').style.visibility = "visible";
+        document.getElementById('from_price').innerHTML = string;
+      }
+    }
+    if (currentTrade.to){
+      if(val==0){
+        document.getElementById('to_price').style.visibility = "hidden";
+      } else {
+        if (currentTrade.to.address === ethAddress){
+          let settings = {address: wEthAddress}
+          let price = await Moralis.Web3API.token.getTokenPrice(settings);
+          let addedConst = price.usdPrice*val;
+          let string = "$"+(Math.round(addedConst*100)/100);
+          console.log("this is the second price "+string)
+          document.getElementById('to_price').style.visibility = "visible";
+          document.getElementById('to_price').innerHTML = string;
+      } else {
+        let settings = {address: currentTrade.to.address}
+        let price = await Moralis.Web3API.token.getTokenPrice(settings);
+        let addedConst = price.usdPrice*val;
+        let string = "$"+(Math.round(addedConst*100)/100);
+        document.getElementById('to_price').style.visibility = "visible";
+        document.getElementById('to_price').innerHTML = string;
+      }
+      }
+  }
+}
 
+async function getToPrice() {
+    var val = document.getElementById('to_amount').value;
+    if (val == 0) {
+      document.getElementById('to_price').style.visibility = "hidden";
+    } else {
+      if (currentTrade.to.address === ethAddress){
+        let settings = {address: wEthAddress}
+        let price = await Moralis.Web3API.token.getTokenPrice(settings);
+        let addedConst = price.usdPrice*val;
+        let string = "$"+(Math.round(addedConst*100)/100);
+        console.log("this is the price "+string)
+        document.getElementById('to_price').style.visibility = "visible";
+        document.getElementById('to_price').innerHTML = string;
+    } else {
+      let settings = {address: currentTrade.to.address}
+      let price = await Moralis.Web3API.token.getTokenPrice(settings);
+      let addedConst = price.usdPrice*val;
+      let string = "$"+(Math.round(addedConst*100)/100);
+      document.getElementById('to_price').style.visibility = "visible";
+      document.getElementById('to_price').innerHTML = string;
+    }
+    if (val==0){
+      document.getElementById('from_price').style.visibility = "hidden";
+    } else {
+      if (currentTrade.from.address === ethAddress){
+        let settings = {address: wEthAddress}
+        let price = await Moralis.Web3API.token.getTokenPrice(settings);
+        let addedConst = price.usdPrice*val;
+        let string = "$"+(Math.round(addedConst*100)/100);
+        console.log("this is the second price "+string)
+        document.getElementById('from_price').style.visibility = "visible";
+        document.getElementById('from_price').innerHTML = string;
+    } else {
+      let settings = {address: currentTrade.from.address}
+      let price = await Moralis.Web3API.token.getTokenPrice(settings);
+      let addedConst = price.usdPrice*val;
+      let string = "$"+(Math.round(addedConst*100)/100);
+      document.getElementById('from_price').style.visibility = "visible";
+      document.getElementById('from_price').innerHTML = string;
+    }
+  }
+}
+}
 async function trySwap() {
     let address = Moralis.User.current().get('ethAddress');
     let amount = Number(document.getElementById('from_amount').value * 10 ** currentTrade.from.decimals);
@@ -185,7 +301,7 @@ function doSwap(userAddress, amount) {
 }
 
 // initializes token input field and its event listeners
-function initTokenInput() {
+ function initTokenInput() {
     // calls autocomplete on init to fill token list with all tokens
     autocomplete();
 
@@ -193,6 +309,14 @@ function initTokenInput() {
     tokenInput.addEventListener('input', function (e) {
         // updates token list on each input
         autocomplete(e.target.value);
+    });
+    document.getElementById('from_amount').addEventListener('input', function (e){
+       getQuote();
+       getFromPrice();
+    });
+    document.getElementById('to_amount').addEventListener('input', function (e){
+       getQuote();
+       getToPrice();
     });
 }
 
