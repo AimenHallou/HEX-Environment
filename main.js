@@ -54,13 +54,13 @@ function selectToken(address) {
     console.log(currentTrade);
     renderInterface();
     getQuote();
-    checkBalance(address);
     if (currentSelectSide=="from"){
       getToPrice();
     }
     if (currentSelectSide=="to"){
       getFromPrice()
     }
+    checkBalance(address);
 }
 
 function renderInterface() {
@@ -76,6 +76,12 @@ function renderInterface() {
 
 function checkBalance (address){
   var count = 0;
+  document.getElementById("from_balance").style.visibility = 'visible';
+  if (currentTrade.to){
+    document.getElementById("to_balance").style.visibility = 'visible';
+  }
+  document.getElementById("from_balance").innerHTML = "Balance: 0"
+  document.getElementById("to_balance").innerHTML = "Balance: 0"
   userBalance.forEach(function (arrayItem) {
     if (arrayItem.symbol=== "ETH"){
       document.getElementById("eth_balance").innerHTML = Math.round(Web3.utils.fromWei(arrayItem.balance)*1000000)/1000000+" ETH &nbsp;";
@@ -92,14 +98,28 @@ function checkBalance (address){
         toBalance = fromBalance = Math.round(Web3.utils.fromWei(arrayItem.balance)*1000000)/1000000;
       }
     }
-  });
-  if (count==0){
-    if (currentSelectSide=="from"){
-      document.getElementById("from_balance").style.visibility = "hidden";
-    } else {
-      document.getElementById("to_balance").style.visibility = "hidden";
+    if (arrayItem.symbol == tokens[currentTrade.from.address].symbol) {
+      document.getElementById("from_balance").innerHTML = "Balance: "+ Math.round(Web3.utils.fromWei(arrayItem.balance)*1000000)/1000000;
+      document.getElementById("from_balance").style.visibility = "visible";
+      fromBalance = Math.round(Web3.utils.fromWei(arrayItem.balance)*1000000)/1000000;
     }
-  }
+    if (currentTrade.to){
+      if (arrayItem.symbol == tokens[currentTrade.to.address].symbol){
+        document.getElementById("to_balance").innerHTML = "Balance: "+ Math.round(Web3.utils.fromWei(arrayItem.balance)*1000000)/1000000;;
+        document.getElementById("to_balance").style.visibility = "visible";
+        toBalance = fromBalance = Math.round(Web3.utils.fromWei(arrayItem.balance)*1000000)/1000000;
+      }
+    }
+  });
+  // if (count==0){
+  //   if (currentSelectSide=="from"){
+  //     document.getElementById("from_balance").innerHTML = "Balance: 0"
+  //     // document.getElementById("from_balance").style.visibility = "hidden";
+  //   } else {
+  //     document.getElementById("to_balance").innerHTML = "Balance: 0"
+  //     // document.getElementById("to_balance").style.visibility = "hidden";
+  //   }
+  // }
 }
 
 async function login() {
