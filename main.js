@@ -14,6 +14,7 @@ const tokenList = document.getElementById('token_list');
 
 async function init() {
     await Moralis.start({ serverUrl, appId });
+    changeText("Connect Wallet");
     await Moralis.enableWeb3();
     getBalance();
     await listAvailableTokens();
@@ -25,8 +26,6 @@ async function init() {
     openModal('from');
     selectToken(ethAddress)
     await getPrice();
-
-
 }
 
 async function listAvailableTokens() {
@@ -41,6 +40,9 @@ async function listAvailableTokens() {
 async function getBalance() {
   userBalance = await Moralis.Web3.getAllERC20();
   console.log(userBalance);
+}
+function changeText(newText) {
+  document.getElementById("swap_button").innerHTML = newText;
 }
 
 function selectToken(address) {
@@ -98,7 +100,6 @@ function checkBalance (address){
       document.getElementById("to_balance").style.visibility = "hidden";
     }
   }
-
 }
 
 async function login() {
@@ -127,6 +128,9 @@ function closeModal() {
     tokenInput.value = '';
     autocomplete();
     document.getElementById('token_modal').style.display = 'none';
+    if (!currentTrade.to && currentTrade.from) {
+      changeText("Enter an amount");
+    }
 }
 
 async function getQuote() {
@@ -320,6 +324,10 @@ function doSwap(userAddress, amount) {
         autocomplete(e.target.value);
     });
     document.getElementById('from_amount').addEventListener('input', function (e){
+      console.log(document.getElementById("swap_button").value);
+      if (document.getElementById("swap_button").value == 'Enter an amount'){
+          console.log("working")
+      }
        getQuote();
        getFromPrice();
     });
